@@ -1,4 +1,6 @@
-import java.util.ArrayList;
+package com.coolkev.spacetrek;
+
+/*import java.util.ArrayList;
 
 class Point{
 	
@@ -48,9 +50,9 @@ class AStarAlgorithm {
 	    Fail to find the target square, and the open list is empty. In this case, there is no path.   
 
 3) Save the path. Working backwards from the target square, go from each square to its parent square until you reach the starting square. That is your path. 
-*/
+/
 	public Point Compute(){
-		if (Normal){/*TODO Implement the normal method*/}else{
+		if (Normal){/*TODO Implement the normal method/}else{
 			
 			// Dijkstra
 			openlist.add(StartPoint);
@@ -74,3 +76,4 @@ class AStarAlgorithm {
 	}
 	
 }
+*/

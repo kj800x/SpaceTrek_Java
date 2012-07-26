@@ -1,3 +1,5 @@
+package com.coolkev.spacetrek;
+
 import java.awt.Color;
 import java.lang.Math;
 
@@ -100,7 +102,6 @@ class LittleRabbit extends Entity {
 		}
 		else{*/
 			double RandomNumber = Math.random()*10;
-
 			
 			if (Age == 20){
 				myWorld.Entities.add(new Rabbit(topleftX, topleftY, myWorld));

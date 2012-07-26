@@ -1,10 +1,12 @@
+package com.coolkev.spacetrek;
+
 import java.awt.Color;
 import java.lang.Math;
 
 class Rabbit extends Entity {
 
 	Color RabbitColor;
-	
+
 	public Rabbit(int X, int Y, World TheWorld) {
 		startX = X;
 		startY = Y;
@@ -23,7 +25,7 @@ class Rabbit extends Entity {
 		}
 		super.Ruins = false;
 	}
-	
+
 	Schematic Render() {
 		Schematic Output = new Schematic(1,1);
 		Output.TopLeftX = topleftX;
@@ -35,11 +37,11 @@ class Rabbit extends Entity {
 	}
 
 	void CheckForStageChange() {
-/*
+		/*
 		int ClosestX = 0;
 		int ClosestY = 0;
 		int ClosestDistance = 10000;
-		
+
 		for (int index = 0; index < myWorld.Entities.size(); index++){
 			if (myWorld.Entities.get(index) instanceof Rabbit){
 				if ((myWorld.Entities.get(index).topleftX != topleftX) && (myWorld.Entities.get(index).topleftY != topleftY)){
@@ -50,7 +52,7 @@ class Rabbit extends Entity {
 				}
 			}
 		}
-	*/	
+		 */	
 		// I now have the ClosestX and ClosestY of the Closest Rabbit. If ClosestDistance == 10000 then there is no other Rabbit.
 		// TODO Complete this function
 		/*if (ClosestDistance == 10000){
@@ -90,41 +92,44 @@ class Rabbit extends Entity {
 			}
 		}
 		else if (topleftX < startX && topleftY > startY){
-			
+
 		}
 		else if (topleftX > startX && topleftY < startY){
-			
+
 		}
 		else if (topleftX < startX && topleftY < startY){
-			
+
 		}
 		else{*/
-			double RandomNumber = Math.random()*10;
-			if (RandomNumber < 2.5){
-				if (myWorld.canIMoveThere(topleftX+1, topleftY)){
-					topleftX++;
-				}
+		if (myWorld.getPoint(topleftX, topleftY).PermCharacter == ':' || myWorld.getPoint(topleftX, topleftY).PermCharacter == ';'){
+			myWorld.setPointForever(topleftX, topleftY, '.', false, Color.ORANGE);
+		}
+		double RandomNumber = Math.random()*10;
+		if (RandomNumber < 2.5){
+			if (myWorld.canIMoveThere(topleftX+1, topleftY)){
+				topleftX++;
 			}
-			else if (RandomNumber < 5){
-				if (myWorld.canIMoveThere(topleftX, topleftY+1)){
-					topleftY++;
-				}
+		}
+		else if (RandomNumber < 5){
+			if (myWorld.canIMoveThere(topleftX, topleftY+1)){
+				topleftY++;
 			}
-			else if (RandomNumber < 7.5){
-				if (myWorld.canIMoveThere(topleftX-1, topleftY)){
-					topleftX--;
-				}
+		}
+		else if (RandomNumber < 7.5){
+			if (myWorld.canIMoveThere(topleftX-1, topleftY)){
+				topleftX--;
 			}
-			else if (RandomNumber < 10){
-				if (myWorld.canIMoveThere(topleftX, topleftY-1)){
-					topleftY--;
-				}
+		}
+		else if (RandomNumber < 10){
+			if (myWorld.canIMoveThere(topleftX, topleftY-1)){
+				topleftY--;
 			}
-			
-			if (Age > 20){
-				Ruins = false;
-				Dead = true;
-			}
+		}
+
+		if (Age > 20){
+			Ruins = false;
+			Dead = true;
+		}
 		//}
-	}
+}
 }

@@ -1,6 +1,9 @@
+package com.coolkev.spacetrek;
+
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.awt.image.BufferedImage;
@@ -10,9 +13,9 @@ class RemindTask extends TimerTask {
 	World myWorld;
 	SpaceTrek myGame;
 	public void run() {
-		if ((Math.random() * 10)>7){
-			myWorld.Entities.add(new Rabbit( (int)(Math.random() * 40), (int)(Math.random() * 40), myWorld));
-		}
+		/*if ((Math.random() * 10)>7){
+			myWorld.Entities.add(new LittleRabbit( (int)(Math.random() * 40), (int)(Math.random() * 40), myWorld));
+		}*/
 		int EntIndex=0;
 		for (EntIndex=0; EntIndex < myWorld.Entities.size(); EntIndex++){
 			myWorld.Entities.get(EntIndex).Update();
@@ -35,6 +38,7 @@ public class SpaceTrek extends Applet implements KeyListener {
 	int width, height;
 	int x, y;
 	World myWorld;
+	
 	public void init() {
 		myWorld = new World(40,40);
 		width = getSize().width;
@@ -97,11 +101,27 @@ public class SpaceTrek extends Applet implements KeyListener {
 				y++;
 			}
 		}
-		if (e.getKeyChar() == 'r'){
+		if (e.getKeyChar() == 'x'){
 			myWorld.Entities.add(new LittleRabbit(x,y,myWorld));
+		}
+		if (e.getKeyChar() == 'q'){
+			myWorld.Entities.add(new Wolf(x,y,myWorld));
 		}
 		if (e.getKeyChar() == 'b'){
 			myWorld.Entities.add(new Bomb(x,y,myWorld));
+		}
+		if (e.getKeyChar() == 'e'){
+			int localx = 0;
+			int localy = 0;
+			for (localx = 0;localx<9;localx++){
+				for (localy = 0;localy<9;localy++){
+					if (myWorld.isOnWorld(x+localx-5,y+localy-5)){
+						if (myWorld.getPoint(x+localx-5, y+localy-5).PermCharacter == '.'){
+							myWorld.setPointForever(x+localx-5,y+localy-5,';',false,Color.green);
+						}
+					}
+				}
+			}
 		}
 		repaint();
 	}
@@ -111,6 +131,8 @@ public class SpaceTrek extends Applet implements KeyListener {
 	}
 
 	public void paint( Graphics endg ) {
+		width = getSize().width;
+		height = getSize().height;
 		bf = new BufferedImage( this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics g = bf.getGraphics();
 		myWorld.ClearField();
@@ -119,11 +141,23 @@ public class SpaceTrek extends Applet implements KeyListener {
 		}
 		myWorld.setPoint(x, y, '@', false, Color.white);
 		Schematic OutputData = myWorld.Render(x-10, y-10, 20, 20);
-		g.setFont(new Font("Courier", Font.PLAIN, 10));
+		
+		int fontsize = (int) (20 * ((float)((width+height)/2)/500));
+		g.setFont(new Font("Courier New", Font.PLAIN, fontsize));
+		
+		int xspace = (width-10)/20;
+		int yspace = (height-10)/20;
+		
 		for (int x = 0; x < OutputData.LengthX; x++){
 			for (int y = 0; y < OutputData.LengthY; y++){
 				g.setColor(OutputData.SchemoTiles[x][y].fgColor);
-				g.drawString(Character.toString(OutputData.SchemoTiles[x][y].Character), 10+(15*x), 10+(15*y));
+				g.drawString(Character.toString(OutputData.SchemoTiles[x][y].Character), 10+(xspace*x), 10+(yspace*y));
+			}
+		}
+		ArrayList<Entity> List = myWorld.GetEntitiesAt(x, y);
+		for (int index=0;index<List.size();index++){
+			if (List.get(index) instanceof Rabbit || List.get(index) instanceof LittleRabbit){
+				List.get(index).Dead = true;
 			}
 		}
 		endg.drawImage(bf, 0, 0, null);

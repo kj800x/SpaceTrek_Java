@@ -1,3 +1,5 @@
+package com.coolkev.spacetrek;
+
 import java.awt.Color;
 import java.lang.Math;
 import java.util.ArrayList;
@@ -10,38 +12,47 @@ import java.util.ArrayList;
  * **/
 class World {
 
-	private static final Color GrassGreenOne = new Color(145,237,146);
+	/*private static final Color GrassGreenOne = new Color(145,237,146);
 	private static final Color GrassGreenTwo = new Color(97, 232,100);
-	
+	 */
 	ArrayList<Entity> Entities = new ArrayList<Entity>(1);
-	
+
 	/** The world is stored in this object.
 	 * Dimensions (1 and 2) are (X and Y) respectively, and self explanatory.
 	 * **/
 	private Tile[][] WorldTiles;
-	
 	/** The only constructor for this class.
-     * @param XLength (int) How many characters the world is horizontally.
-     * @param YLength (int) How many characters the world is vertically.
-     * @param DefaultCharacter (char) What layer 1 and 2 of the world is filled with by default.
+	 * @param XLength (int) How many characters the world is horizontally.
+	 * @param YLength (int) How many characters the world is vertically.
+	 * @param DefaultCharacter (char) What layer 1 and 2 of the world is filled with by default.
 	 */
 	public World(int XLength, int YLength){
 		super();
 		ResetField(XLength, YLength);
 	}
+	public ArrayList<Entity> GetEntitiesAt(int x, int y){
+		ArrayList<Entity> Output = new ArrayList<Entity>(1);
+		int index = 0;
+		for (index=0; index<Entities.size();index++){
+			if (Entities.get(index).IsAt(x,y)){
+				Output.add(Entities.get(index));
+			}
+		}
+		return Output;
+	}
+
 	/** This method resets the field to defaults.
 	 * @param XLength (int) the new horizontal length of the field.
 	 * @param YLength (int) the new vertical length of the field.**/
-	
 	public void ResetField(int XLength, int YLength) {
 		WorldTiles = new Tile[XLength][YLength];
 		for (int x=0; x<XLength; x++){
 			for (int y=0; y<YLength; y++){
 				if (Math.random()*10 > (double)2 ){
-					WorldTiles[x][y] = new Tile('.', GrassGreenOne);
+					WorldTiles[x][y] = new Tile(':', new Color(0,128,0));//GrassGreenOne);
 				}
 				else{
-					WorldTiles[x][y] = new Tile(',', GrassGreenTwo);
+					WorldTiles[x][y] = new Tile(';', new Color(0,128,0));//GrassGreenTwo);
 				}
 				WorldTiles[x][y].Collision = false;
 			}
@@ -60,7 +71,7 @@ class World {
 	/** Method will overlay a Schematic onto the World.
 	 * @param toOverlay (Schematic) The Schematic we will overlay.
 	 */
-	
+
 	public void OverlaySchematic(Schematic toOverlay) {
 		for (int x = 0; x < toOverlay.LengthX; x++){
 			for (int y = 0; y < toOverlay.LengthY; y++){
@@ -105,14 +116,21 @@ class World {
 	 * @param collides (boolean) Whether there is a collision there.**/
 
 	public void setPoint(int x, int y, char toWhat, boolean collides, Color fgcolor) {
-		WorldTiles[x][y].Character = toWhat;
-		WorldTiles[x][y].Collision = collides;
-		WorldTiles[x][y].fgColor   = fgcolor;
+		if (x>0 && y>0 && x<getXLength() &&  y<getYLength()){
+			WorldTiles[x][y].Character = toWhat;
+			WorldTiles[x][y].Collision = collides;
+			WorldTiles[x][y].fgColor   = fgcolor;
+		}
 	}
 	public void setPointForever(int x, int y, char toWhat, boolean collides, Color fgcolor) {
-		WorldTiles[x][y].PermCharacter = toWhat;
-		WorldTiles[x][y].PermCollision = collides;
-		WorldTiles[x][y].PermfgColor   = fgcolor;
+		if (x>0 && y>0 && x<getXLength() &&  y<getYLength()){
+			WorldTiles[x][y].PermCharacter = toWhat;
+			WorldTiles[x][y].PermCollision = collides;
+			WorldTiles[x][y].PermfgColor   = fgcolor;
+		}
+	}
+	public Tile getPoint(int x, int y){
+		return WorldTiles[x][y];
 	}
 
 	/**
@@ -140,7 +158,7 @@ class World {
 		}
 		return Output;
 	}
-	
+
 	/**Getter for the length of the world in the X direction
 	 * @return (int) X-Length**/
 	public int getXLength() {
@@ -151,5 +169,8 @@ class World {
 	 * @return (int) Y-Length**/
 	public int getYLength() {
 		return WorldTiles[0].length;
+	}
+	public boolean isOnWorld(int x, int y) {
+		return (x>0 && x<getXLength() && y>0 && y<getYLength());
 	}
 }

@@ -1,3 +1,5 @@
+package com.coolkev.spacetrek;
+
 import java.awt.Color;
 
 // TODO Write JAVADOCS for 'Bomb'
