@@ -1,4 +1,4 @@
 *.class
 *.html
-*.sav
 .settings/*
+Saves/*

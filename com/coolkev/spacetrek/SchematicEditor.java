@@ -1,3 +1,6 @@
+//TODO write documentation for the keyboard setup
+//TODO write a README.md for github
+
 package com.coolkev.spacetrek;
 
 import java.applet.*;
@@ -12,8 +15,11 @@ public class SchematicEditor extends Applet implements KeyListener {
 	Sprite Sprite = new Sprite();
 	int SpriteState = 1;
 	char MenuState = 'O';
+	char TypeTarget = 'z';
 	private static final long serialVersionUID = 1L;
 	int currentX, currentY;
+	String SaveFile = "SpaceTrekSave.sav";
+	String LoadFile = "SpaceTrekSave.sav";
 
 	Menu CurrentMenu = new Menu();
 
@@ -26,17 +32,32 @@ public class SchematicEditor extends Applet implements KeyListener {
 
 	public void keyPressed(KeyEvent e) {       
 		int key = e.getKeyCode();
-		if (key == KeyEvent.VK_LEFT) {
-			currentX--;
+		if (MenuState == 'T') {
+			if (key == KeyEvent.VK_ESCAPE || key == KeyEvent.VK_ENTER) {
+				MenuState = 'O';
+			}
+			if (key == KeyEvent.VK_BACK_SPACE) {
+				if (TypeTarget == 'z'){
+					SaveFile = SaveFile.substring(0, SaveFile.length()-1);
+				}
+				else if (TypeTarget == 'x'){
+					LoadFile = LoadFile.substring(0, LoadFile.length()-1);
+				}
+			}
 		}
-		else if (key == KeyEvent.VK_RIGHT) {
-			currentX++;
-		}
-		else if (key == KeyEvent.VK_UP) {
-			currentY--;
-		}
-		else if (key == KeyEvent.VK_DOWN) {
-			currentY++;
+		else {
+			if (key == KeyEvent.VK_LEFT) {
+				currentX--;
+			}
+			else if (key == KeyEvent.VK_RIGHT) {
+				currentX++;
+			}
+			else if (key == KeyEvent.VK_UP) {
+				currentY--;
+			}
+			else if (key == KeyEvent.VK_DOWN) {
+				currentY++;
+			}
 		}
 		repaint();
 	}
@@ -45,13 +66,32 @@ public class SchematicEditor extends Applet implements KeyListener {
 
 	public void keyTyped( KeyEvent e ) {
 		switch (MenuState) {
-		case 'C':
+		case 'C': //Changing current block
 			if (Sprite.Schems.get(SpriteState).IsInsideBounds(currentX, currentY)) {
 				Sprite.Schems.get(SpriteState).SchemoTiles[currentX][currentY].Character = e.getKeyChar();
 			}
 			MenuState = 'O';
 			break;
-		case 'O':
+		case 'T': //Typing
+			if (e.getKeyChar() != '\b') {
+				if (TypeTarget == 'z'){
+					SaveFile = SaveFile + e.getKeyChar();
+				} else if (TypeTarget == 'x') {
+					LoadFile = LoadFile + e.getKeyChar();
+				}
+			}
+			break;
+		case 'S': //Select(The Target For Typing)
+			if (e.getKeyChar() == 'z'){
+				TypeTarget = 'z';
+				MenuState = 'T';
+			}
+			if (e.getKeyChar() == 'x'){
+				TypeTarget = 'x';
+				MenuState = 'T';
+			}
+			break;
+		case 'O': //Others
 			if (e.getKeyChar() == 'a'){
 				currentX--;
 			}
@@ -65,10 +105,10 @@ public class SchematicEditor extends Applet implements KeyListener {
 				currentY++;
 			}
 			if (e.getKeyChar() == 'z'){
-				Sprite.Save("SpaceTrekSave.sav");
+				Sprite.Save("Saves/"+SaveFile);
 			}
 			if (e.getKeyChar() == 'x'){
-				Sprite.Load("SpaceTrekSave.sav");
+				Sprite.Load("Saves/"+LoadFile);
 			}
 			if (e.getKeyChar() == 'm'){
 				if (SpriteState < Sprite.Schems.size()-1){
@@ -99,8 +139,11 @@ public class SchematicEditor extends Applet implements KeyListener {
 			if (e.getKeyChar() == 'q'){
 				MenuState = 'E'; 
 			}
+			if (e.getKeyChar() == ' '){
+				MenuState = 'S'; 
+			}
 			break;
-		case 'E':
+		case 'E': // (De)Extend the schematic
 			if (e.getKeyChar() == 'a'){ //Add a column to the left side
 				Sprite.Schems.get(SpriteState).AddLeftColumn();
 				currentX++;
@@ -201,8 +244,28 @@ public class SchematicEditor extends Applet implements KeyListener {
 		g.setColor(Color.green);
 		g.drawRect(((viewwidthandhight/2)+1)*fontsize, ((viewwidthandhight/2)+1)*fontsize, fontsize, fontsize);
 
-		if (MenuState == 'A'){
-
+		if (MenuState == 'T'){
+			g.setColor(Color.black);
+			g.fillRect(((viewwidthandhight/2)+1)*fontsize, ((viewwidthandhight/2)+1)*fontsize, fontsize*7, fontsize);
+			g.setColor(Color.magenta);
+			g.draw3DRect(((viewwidthandhight/2)+1)*fontsize, ((viewwidthandhight/2)+1)*fontsize, fontsize*7, fontsize, true);
+			g.setColor(Color.white);
+			g.setFont(new Font("Courier New", Font.PLAIN, 14));
+			String EditingString = "";
+			String EditingStringMETA = "";
+			if (TypeTarget=='x'){
+				EditingString = LoadFile;
+				EditingStringMETA = "LoadFile";
+			}
+			else if (TypeTarget=='z'){
+				EditingString = SaveFile;
+				EditingStringMETA = "SaveFile";
+			}
+			g.drawString(EditingString, ((viewwidthandhight/2)+1)*fontsize, ((viewwidthandhight/2)+2)*fontsize);
+			
+			g.setColor(Color.white);
+			g.setFont(new Font("Courier New", Font.PLAIN, 16));
+			g.drawString("Editing: " + EditingStringMETA, 1 , 680);
 		}
 
 		g.setColor(Color.white);
