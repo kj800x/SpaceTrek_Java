@@ -154,12 +154,6 @@ public class SpaceTrek extends Applet implements KeyListener {
 				g.drawString(Character.toString(OutputData.SchemoTiles[x][y].Character), 10+(xspace*x), 10+(yspace*y));
 			}
 		}
-		ArrayList<Entity> List = myWorld.GetEntitiesAt(x, y);
-		for (int index=0;index<List.size();index++){
-			if (List.get(index) instanceof Rabbit || List.get(index) instanceof LittleRabbit){
-				List.get(index).Dead = true;
-			}
-		}
 		endg.drawImage(bf, 0, 0, null);
 	}
 }
